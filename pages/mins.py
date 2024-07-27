@@ -1,5 +1,7 @@
 import streamlit as st
 
+# from ..states import Analyzer
+
 st.page_link("server.py", label="Home", icon="🏠")
 
 import INS_Analysis
@@ -8,6 +10,10 @@ import plotly.express as px
 from streamlit_plotly_events import plotly_events
 import pandas as pd
 from toolbox import fileOptions
+
+
+if 'Analyzer' not in st.session_state:
+    st.session_state.Analyzer = INS_Analysis.Analyzer()
 
 st.title('MINS')
 
@@ -45,20 +51,39 @@ with tab2:
     else:
         labels = st.multiselect('Select spectrums for calibration', st.session_state.Analyzer.spectrums.keys())
 
-        cailb_files_df = pd.DataFrame(st.session_state.Analyzer.spectrums).T[['vals', 'areas', 'fits', 'true_comp', 'pred_comp', 'for_calib']]
+        cailb_files_df = pd.DataFrame(st.session_state.Analyzer.spectrums)
+        cailb_files_df_copy = cailb_files_df.copy()
+        cailb_files_df = cailb_files_df.T[['vals', 'true_comp']]
+        # unpack true_comp
+        window_labels = ['Si1', 'Si2C1']
+        for label in window_labels:
+            cailb_files_df['Real '+label] = cailb_files_df['true_comp'].apply(lambda x: x[label])
+        
+        cailb_files_df = cailb_files_df.drop('true_comp', axis=1)
         cailb_files_df = cailb_files_df.loc[labels]
-        st.dataframe(
+
+        cailb_files_df = st.data_editor(
             cailb_files_df,
             column_config={
                 'vals': st.column_config.LineChartColumn(
                     'vals',
-                    width="medium",
+                    width="small",
                     ),
             }
             )
+        
+        cailb_files_df['true_comp'] = cailb_files_df.apply(lambda x: {label: x['Real '+label] for label in window_labels}, axis=1)
+        cailb_files_df = cailb_files_df.drop(['Real '+label for label in window_labels], axis=1)
+        cailb_files_df = cailb_files_df.T
 
-        if st.button('Calibrate'):
-            pass
+        cailb_files_df_copy.loc['true_comp'] = cailb_files_df.loc['true_comp']
+
+
+
+        if st.button('Calibrate'):        
+            for label in labels:
+                st.session_state.Analyzer.spectrums[label]['true_comp'] = cailb_files_df_copy[label]['true_comp']
+            st.session_state.Analyzer.calibrate(labels)
         for label in labels:
             bins = st.session_state.Analyzer.spectrums[label]['bins']
             vals = st.session_state.Analyzer.spectrums[label]['vals']

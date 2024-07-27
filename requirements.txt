@@ -9,13 +9,12 @@ gitdb==4.0.11
 GitPython==3.1.43
 idna==3.7
 # Editable Git install with no remote (INS_Analysis==1.0)
--e /Documents/Tools/INS-Analysis
+-e git+https://github.com/JoseACortes/INS-Analysis.git#egg=INS_Analysis
 Jinja2==3.1.4
 jsonschema==4.22.0
 jsonschema-specifications==2023.12.1
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
-mcnptools @ file:///Documents/NotMyTools/mcnptoolsINSFE/python
 mdurl==0.1.2
 numpy==2.0.0
 packaging==24.1

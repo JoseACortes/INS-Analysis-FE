@@ -1,10 +1,12 @@
 temporary_pwd=$(pwd)
 
 apt update
-cd /Documents/NotMyTools/mcnptoolsINSFE
-bash install.sh
 
-cd /Documents/Tools/INS-Analysis
+apt install -y git
+
+rm -rf _mcnptools
+cp -r mcnptools _mcnptools
+cd _mcnptools
 bash install.sh
 
 cd $temporary_pwd
