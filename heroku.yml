@@ -1,0 +1,5 @@
+build:
+  docker:
+    web: dockerfile
+run:
+  web: bash bash_scripts/startserver.sh
