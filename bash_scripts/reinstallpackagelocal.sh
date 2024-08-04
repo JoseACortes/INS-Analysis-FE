@@ -1,6 +1,6 @@
 temporary_pwd=$(pwd)
 
-cd /Documents/Tools/INS-Analysis
+cd ~/Documents/Tools/INS-Analysis
 bash install.sh
 
 cd $temporary_pwd

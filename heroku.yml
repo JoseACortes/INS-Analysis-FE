@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: python3 -m streamlit run server.py
+  web: streamlit run server.py
